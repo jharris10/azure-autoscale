@@ -95,6 +95,19 @@
              },
              "defaultValue": "Standard_D1_v2"
         },
+        "storageType": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Premium_LRS",
+                "Standard_RAGRS"
+            ],
+            "metadata": {
+                "description": "Type of the storage account created"
+            },
+            "defaultValue": "Standard_LRS"
+        },
         "firewallModel": {
              "type": "string",
              "defaultValue": "byol",
@@ -141,6 +154,13 @@
                 "description": "Type of the storage account created"
             },
             "defaultValue": "Standard_LRS"
+        },
+        "storageName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the storage account created to store the VM's disks.  Storage account name must be globally unique."
+            },
+            "defaultValue": "Enter a globally unique name"
         },
         "username": {
             "type": "string",
@@ -242,9 +262,57 @@
              "metadata": {
                  "description": "Select the metric on which auto scale events should be triggered."
              } 
+        },
+        "subscriptionId": {
+            "type": "string",
+            "metadata": {
+                "description": "Account subscription id - https://blogs.msdn.microsoft.com/mschray/2016/03/18/getting-your-azure-subscription-guid-new-portal/"
+            }
+        },
+        "appID": {
+            "type": "string",
+            "metadata": {
+                "description": "Registered App ID - https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal"
+            }
+        },
+        "appSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Client Secret for service principal - https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal"
+            }
+        },
+        "TenantId":{
+            "type": "string",
+            "metadata": {
+                "description": "Tenant ID for service principal"
+            }
+        },
+        "panoramaIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address of the Panorama Management server. Should be reachable by both the hub and spoke"
+            }
+        },
+        "panoramaApiKey": {
+            "type": "securestring",
+            "metadata":{
+                "description": "API key to access Panorama Management server"
+            }
+        },
+        "licenseDeactivationKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": "API key to be programmed in the Panorama server so that license deactivation works"
+            }
         }
     },
     "variables": {
+        "nicNameWorker": "[concat ('workernic', variables('namingInfix'))]",
+        "WorkerPublicIPAddressName": "[concat('workerPip', variables('namingInfix'))]",
+        "worker-node-name": "[concat('worker-node',variables('namingInfix'))]",
+        "storageName": "[toLower(parameters('storageName'))]",
+
+
         "location" : "[resourceGroup().location]",
         "namingInfix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "rgname" : "[resourceGroup().name]",
@@ -260,7 +328,6 @@
         "baseUrl" : "https://raw.githubusercontent.com/jharris10/azure-autoscale/master",
         "nsgURL" : "[concat(variables('baseUrl'),'/nsg-new.json')]",
         "vnetURL" : "[concat(variables('baseUrl'),'/deployVnet.json')]",
-        "publicLBURL" : "[concat(variables('baseUrl'),'/public-lb-', variables('LoadBalancerType'), '.json')]",
         "privateLBURL" : "[concat(variables('baseUrl'),'/private-lb-', parameters('authenticationType'),'.json')]",
         "storageAccountSetupURL" : "[concat(variables('baseUrl'),'/deployStorage.json')]",
         "defaultUdrSetupURL": "[concat(variables('baseUrl'), '/deployDefaultUDR.json')]",
@@ -271,7 +338,6 @@
         "computeApiVersion": "2017-03-30",
         "appInsightsName": "[concat(variables('rgname'), '-appinsights-', variables('namingInfix'))]",
         "appInsightsUrl": "[concat(variables('baseUrl'),'/deployAppInsights.json')]",
-        "nicNameWorker": "[concat('tempworkernic', variables('namingInfix'))]",
         "workerName": "[concat('tempworker', variables('namingInfix'))]",
         "appGatewayName": "[concat(variables('rgname'), 'appgw', variables('namingInfix'))]",
         "lbBackendPoolName": "[concat('outbound-lb-Bepool', variables('namingInfix'))]",
@@ -282,6 +348,53 @@
         "deployOutboundLoadBalancerURL": "[concat(variables('baseUrl'),'/deployLoadBalancer.json')]"
     },
     "resources": [
+        {
+            "apiVersion": "[variables('computeApiVersion')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('worker-node-name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/deployVNet",
+                "Microsoft.Resources/deployments/deployStorage",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicNameWorker'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_A1"
+                },
+                "osProfile": {
+                    "computername": "[variables('worker-node-name')]",
+                    "adminUsername": "[parameters('username')]",
+                    "adminPassword": "[parameters('password')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "16.04-LTS",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "worker-osdisk",
+                        "vhd": {
+                            "uri": "[concat('https://', variables('storageName'), '.blob.core.windows.net/vhds/tempworker.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicNameWorker'))]",
+                            "properties": { 
+                                "primary": true
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         {
             "name": "SetupAppInsights",
             "type": "Microsoft.Resources/deployments",
@@ -296,6 +409,27 @@
                     "appInsightsName": {
                         "value": "[variables('appInsightsName')]"
                     }
+                }
+            }
+        },
+        {
+            "name": "[concat(variables('worker-node-name'),'/vm-customscript')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "[variables('computeApiVersion')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
+                ],
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-hub/start.sh",
+                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-hub/monitor.py"
+                    ],
+                    "commandToExecute": "[concat('/bin/bash ./start.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), '&')]"
                 }
             }
         },
