@@ -257,13 +257,12 @@
         "internalLoadBalancerName" : "myPrivateLB",
         "LoadBalancerType" : "layer-7",
         "firewallVmCount" : 2,
-        "baseUrl" : "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-spoke",
+        "baseUrl" : "https://raw.githubusercontent.com/jharris10/azure-autoscale/master",
         "nsgURL" : "[concat(variables('baseUrl'),'/nsg-new.json')]",
         "vnetURL" : "[concat(variables('baseUrl'),'/deployVnet.json')]",
         "publicLBURL" : "[concat(variables('baseUrl'),'/public-lb-', variables('LoadBalancerType'), '.json')]",
         "privateLBURL" : "[concat(variables('baseUrl'),'/private-lb-', parameters('authenticationType'),'.json')]",
         "storageAccountSetupURL" : "[concat(variables('baseUrl'),'/deployStorage.json')]",
-        "vnetPeeringURL": "[concat(variables('baseUrl'), '/deployVnetPeering.json')]",
         "defaultUdrSetupURL": "[concat(variables('baseUrl'), '/deployDefaultUDR.json')]",
         "vmseriesURL" : "[concat(variables('baseUrl'),'/vmseries.json')]",
         "appInsightsApiVersion": "2018-05-01", 
@@ -275,10 +274,12 @@
         "nicNameWorker": "[concat('tempworkernic', variables('namingInfix'))]",
         "workerName": "[concat('tempworker', variables('namingInfix'))]",
         "appGatewayName": "[concat(variables('rgname'), 'appgw', variables('namingInfix'))]",
-        "appGwBackendPoolName": "[concat(variables('rgname'), 'appGwBepool', variables('namingInfix'))]",
+        "lbBackendPoolName": "[concat('outbound-lb-Bepool', variables('namingInfix'))]",
         "vmssName": "[concat('pavmfw', variables('namingInfix'))]",
         "customDataField": "[concat('storage-account=', parameters('bootstrapStorageAccount'), ',access-key=', parameters('bootstrapStorageAccountAccessKey'), ',file-share=', parameters('bootstrapFileShare'),',share-directory=', parameters('bootstrapSharedDir'))]",
-        "space": " "
+        "space": " ",
+        "loadBalancerName": "[concat(parameters('virtualNetworkName'), '-outbound-lb' )]", 
+        "deployOutboundLoadBalancerURL": "[concat(variables('baseUrl'),'/deployLoadBalancer.json')]"
     },
     "resources": [
         {
@@ -517,46 +518,14 @@
                 }
             }
         },
-        {
-            "name": "SetupPublicLoadBalancer",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/SetupVNET",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('workerName'),'vm-customscript')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('publicLBURL')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "lbName": {
-                         "value": "[variables('appGatewayName')]"
-                    },
-                    "publicIPAddressName": {
-                         "value": "[parameters('appGatewayDnsName')]"
-                    },
-                    "vnetName": {
-                         "value": "[parameters('virtualNetworkName')]"
-                    },
-                    "subnetName": {
-                         "value": "[variables('appGatewaySubnetName')]"
-                    },
-                    "appGwBackendPoolName": {
-                        "value": "[variables('appGwBackendPoolName')]"
-                    }
-                }
-            }
-        },
+
         {
             "name": "SetupVMSeries",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "Microsoft.Resources/deployments/SetupVNET",
-                "Microsoft.Resources/deployments/SetupPublicLoadBalancer",
+                "Microsoft.Resources/deployments/deployOutboundLoadBalancer",
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('workerName'),'vm-customscript')]"
             ],
             "properties": {
@@ -609,7 +578,7 @@
                         "value": "[variables('appGatewayName')]"
                     },
                     "BePoolName": {
-                        "value": "[variables('appGwBackendPoolName')]"
+                        "value": "[variables('lbBackendPoolName')]"
                     },
                     "appInsightsName": {
                         "value": "[variables('appInsightsName')]"
@@ -677,34 +646,50 @@
                 }
              }
         },
-        {
-            "name": "SetupVNetPeering",
+        {    
+            "name": "deployOutboundLoadBalancer",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2015-01-01",
             "dependsOn": [
-                "Microsoft.Resources/deployments/SetupVNET",
-                "Microsoft.Resources/deployments/SetupVMSeries"
+                "Microsoft.Resources/deployments/deployVNet",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('vnetPeeringURL')]",
+                    "uri": "[variables('deployOutboundLoadBalancerURL')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "vNet1Name": {
-                         "value": "[parameters('virtualNetworkName')]"
+                    "loadBalancerSku": {
+                        "value": "Standard"
                     },
-                    "vNet2Name": {
-                         "value": "[parameters('hubVnetName')]"
+                    "location": {
+                        "value": "[variables('location')]"
                     },
-                    "vNet2ResourceGroupName": {
-                         "value": "[parameters('hubResourceGroupName')]"
+                    "virtualNetworkRG": {
+                        "value": "[variables('rgName')]"
+                    },
+                    "virtualNetworkName": {
+                        "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "subnetName": {
+                        "value": "[variables('trustedSubnetName')]"
+                    },
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
+                    "loadBalancerIP": {
+                        "value": "[parameters('hubloadBalancerIP')]"
+                    },
+                    "BePoolName": {
+                        "value": "[variables('lbBackendPoolName')]"
                     }
                 }
-             }
+            }
         }
     ],
+
     "outputs": {
     }
 }

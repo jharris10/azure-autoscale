@@ -119,7 +119,7 @@
                 "description": "Application Gateway Name"
             }
         },
-        "appGwBePoolName": {
+        "BePoolName": {
             "type": "string",
             "metadata": {
                 "description": "Application Gateway Backend Pool Name"
@@ -285,11 +285,7 @@
                                     "properties": {
                                         "subnet": {
                                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameUntrust'))]"
-                                        },
-                                        "ApplicationGatewayBackendAddressPools": [
-                                        {
-                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/applicationGateways/', parameters('appGwName'), '/backendAddressPools/', parameters('appGwBePoolName'))]"
-                                        }]
+                                        }
                                     }
                                 }]
                             }
@@ -304,7 +300,11 @@
                                     "properties": {
                                         "subnet": {
                                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameTrust'))]"
-                                        }
+                                        },
+                                        "ApplicationGatewayBackendAddressPools": [
+                                        {
+                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/applicationGateways/', parameters('appGwName'), '/backendAddressPools/', parameters('BePoolName'))]"
+                                        }]
                                     }
                                 }]
                             }
