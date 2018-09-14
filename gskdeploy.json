@@ -340,7 +340,7 @@
         "appInsightsUrl": "[concat(variables('baseUrl'),'/deployAppInsights.json')]",
         "workerName": "[concat('tempworker', variables('namingInfix'))]",
         "appGatewayName": "[concat(variables('rgname'), 'appgw', variables('namingInfix'))]",
-        "lbBackendPoolName": "[concat('outbound-lb-Bepool', variables('namingInfix'))]",
+        "lbBackendPoolName": "[concat('outboundlbBepool', variables('namingInfix'))]",
         "vmssName": "[concat('pavmfw', variables('namingInfix'))]",
         "customDataField": "[concat('storage-account=', parameters('bootstrapStorageAccount'), ',access-key=', parameters('bootstrapStorageAccountAccessKey'), ',file-share=', parameters('bootstrapFileShare'),',share-directory=', parameters('bootstrapSharedDir'))]",
         "space": " ",
@@ -355,7 +355,6 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "Microsoft.Resources/deployments/SetupVNET",
-                "Microsoft.Resources/deployments/deployStorage",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicNameWorker'))]"
             ],
             "properties": {

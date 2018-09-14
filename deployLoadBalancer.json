@@ -19,8 +19,6 @@
 				"description": "Deployment location"
 			}
 		},
-
-		// vnet parameters
 		"virtualNetworkRG": {
 			"type": "string",
 			"metadata": {
@@ -89,7 +87,7 @@
 				],
 				"backendAddressPools": [
 					{
-						"name": "[parameters('BePoolName')"
+						"name": "[parameters('BePoolName')]"
 					}
 				],
 				"loadBalancingRules": [
