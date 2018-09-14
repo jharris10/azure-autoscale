@@ -354,7 +354,7 @@
             "name": "[variables('worker-node-name')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "Microsoft.Resources/deployments/deployVNet",
+                "Microsoft.Resources/deployments/SetupVNET",
                 "Microsoft.Resources/deployments/deployStorage",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicNameWorker'))]"
             ],
@@ -785,7 +785,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "Microsoft.Resources/deployments/deployVNet",
+                "Microsoft.Resources/deployments/SetupVNET",
                 "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
             ],
             "properties": {
