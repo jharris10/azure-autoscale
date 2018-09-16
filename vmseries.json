@@ -113,12 +113,7 @@
                 "description": "Trust Subnet name"
             }
         },
-        "appGwName": {
-            "type": "string",
-            "metadata": {
-                "description": "Application Gateway Name"
-            }
-        },
+
         "BePoolName": {
             "type": "string",
             "metadata": {
@@ -300,11 +295,8 @@
                                     "properties": {
                                         "subnet": {
                                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameTrust'))]"
-                                        },
-                                        "loadBalancerBackendAddressPools": [
-                                        {
-                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/applicationGateways/', parameters('appGwName'), '/backendAddressPools/', 'BePoolvmss')]"
-                                        }]
+                                        }
+                                        
                                     }
                                 }]
                             }

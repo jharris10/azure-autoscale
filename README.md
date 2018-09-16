@@ -1,1 +1,1 @@
-# Azure Spoke VNet 1.1
+# Azure Hub VNet 1.1

@@ -1,0 +1,120 @@
+[2018-09-14 19:20:54,756] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 19:21:00,709] [INFO] (MainThread) acadf118-3338-4c6b-9817-b5e680d48fde - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:00,982] [INFO] (MainThread) acadf118-3338-4c6b-9817-b5e680d48fde - OAuth2Client:Get Token Server returned this correlation_id: acadf118-3338-4c6b-9817-b5e680d48fde
+[2018-09-14 19:21:23,024] [INFO] (MainThread) 4be670ec-93bb-4442-892c-2c2a0a0cffe2 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:23,481] [INFO] (MainThread) d5394405-4353-47bb-9e06-902d5d81f8b1 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:23,659] [INFO] (MainThread) 5fe2c0d0-8db6-4670-8799-6a173f92b6e3 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:23,835] [INFO] (MainThread) 3701a59d-972f-4e47-b38f-713142afa4a8 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:24,005] [INFO] (MainThread) 2302a6ea-d0ac-4551-ab97-b0d698e3b00c - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:24,191] [INFO] (MainThread) 00c1ccde-c7f9-470d-b13b-915b6b5cf5e6 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:24,459] [INFO] (MainThread) dcbf2c8b-a23b-47a9-ad1e-2a9656073a87 - TokenRequest:Getting token with client credentials.
+[2018-09-14 19:21:43,992] [INFO] (MainThread) Client-Request-ID=0886f61e-b84b-11e8-8441-784f435c7cc4 Outgoing request: Method=GET, Path=/Tables('jharrishubvnetvmsstable'), Query={'timeout': None}, Headers={'x-ms-version': '2018-03-28', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'x-ms-client-request-id': '0886f61e-b84b-11e8-8441-784f435c7cc4', 'Accept': 'application/json;odata=nometadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'Authorization': u'SharedKey jharrishubvnetstor:cuzCtfd0XaoYdH6GxY9uu/hl1AFbKBvjiHEFNR072dQ=', 'x-ms-date': 'Fri, 14 Sep 2018 18:21:43 GMT'}.
+[2018-09-14 19:21:44,471] [INFO] (MainThread) Client-Request-ID=0886f61e-b84b-11e8-8441-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 18:21:44 GMT, Server-Request-ID=aff40dd3-4002-0016-0e57-4c6689000000, HTTP Status Code=404, Message=Not Found, Headers={'x-ms-version': '2018-03-28', 'x-content-type-options': 'nosniff', 'transfer-encoding': 'chunked', 'x-ms-request-id': 'aff40dd3-4002-0016-0e57-4c6689000000', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 18:21:44 GMT', 'content-type': 'application/json;odata=nometadata;streaming=true;charset=utf-8'}.
+[2018-09-14 19:21:44,482] [INFO] (MainThread) Client-Request-ID=0886f61e-b84b-11e8-8441-784f435c7cc4 Operation failed: checking if the operation should be retried. Current retry count=0, Server-Timestamp=Fri, 14 Sep 2018 18:21:44 GMT, Server-Request-ID=aff40dd3-4002-0016-0e57-4c6689000000, HTTP status code=404, Exception=Not Found{"odata.error":{"code":"ResourceNotFound","message":{"lang":"en-US","value":"The specified resource does not exist.\nRequestId:aff40dd3-4002-0016-0e57-4c6689000000\nTime:2018-09-14T18:21:44.4048689Z"}}}.
+[2018-09-14 19:21:44,482] [ERROR] (MainThread) Client-Request-ID=0886f61e-b84b-11e8-8441-784f435c7cc4 Retry policy did not allow for a retry: Server-Timestamp=Fri, 14 Sep 2018 18:21:44 GMT, Server-Request-ID=aff40dd3-4002-0016-0e57-4c6689000000, HTTP status code=404, Exception=Not Found{"odata.error":{"code":"ResourceNotFound","message":{"lang":"en-US","value":"The specified resource does not exist.\nRequestId:aff40dd3-4002-0016-0e57-4c6689000000\nTime:2018-09-14T18:21:44.4048689Z"}}}.
+[2018-09-14 19:21:44,483] [INFO] (MainThread) Client-Request-ID=08d1e1d7-b84b-11e8-8c2c-784f435c7cc4 Outgoing request: Method=POST, Path=/Tables, Query={'timeout': None}, Headers={'Content-Length': '40', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'Prefer': 'return-no-content', 'x-ms-version': '2018-03-28', 'Accept': 'application/json;odata=minimalmetadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'x-ms-client-request-id': '08d1e1d7-b84b-11e8-8c2c-784f435c7cc4', 'Content-Type': 'application/json', 'Authorization': u'SharedKey jharrishubvnetstor:ZCSigaRcmnSEorrqWJKqUhccT3bIWNw9hTNA1ibp1bw=', 'x-ms-date': 'Fri, 14 Sep 2018 18:21:44 GMT'}.
+[2018-09-14 19:21:44,589] [INFO] (MainThread) Client-Request-ID=08d1e1d7-b84b-11e8-8c2c-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 18:21:44 GMT, Server-Request-ID=aff40dd7-4002-0016-1057-4c6689000000, HTTP Status Code=204, Message=No Content, Headers={'x-ms-version': '2018-03-28', 'preference-applied': 'return-no-content', 'x-content-type-options': 'nosniff', 'x-ms-request-id': 'aff40dd7-4002-0016-1057-4c6689000000', 'content-length': '0', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'location': "https://jharrishubvnetstor.table.core.windows.net/Tables('jharrishubvnetvmsstable')", 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 18:21:44 GMT', 'dataserviceid': "https://jharrishubvnetstor.table.core.windows.net/Tables('jharrishubvnetvmsstable')"}.
+[2018-09-14 19:21:44,589] [INFO] (MainThread) VMSS Table jharrishubvnetvmsstable created succesfully
+[2018-09-14 19:22:04,651] [INFO] (MainThread) Client-Request-ID=14d73763-b84b-11e8-a340-784f435c7cc4 Outgoing request: Method=GET, Path=/jharrishubvnetvmsstable(), Query={'$top': None, 'NextPartitionKey': None, '$filter': None, 'timeout': None, 'NextRowKey': None, '$select': None}, Headers={'x-ms-version': '2018-03-28', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'x-ms-client-request-id': '14d73763-b84b-11e8-a340-784f435c7cc4', 'Accept': 'application/json;odata=minimalmetadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'Authorization': u'SharedKey jharrishubvnetstor:xT2DiI+defuOt/p8Z+pU/nCQBZngc4GpiJktk8btk94=', 'x-ms-date': 'Fri, 14 Sep 2018 18:22:04 GMT'}.
+[2018-09-14 19:22:04,761] [INFO] (MainThread) Client-Request-ID=14d73763-b84b-11e8-a340-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 18:22:04 GMT, Server-Request-ID=aff40e93-4002-0016-0757-4c6689000000, HTTP Status Code=200, Message=OK, Headers={'x-ms-version': '2018-03-28', 'x-content-type-options': 'nosniff', 'transfer-encoding': 'chunked', 'x-ms-request-id': 'aff40e93-4002-0016-0757-4c6689000000', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 18:22:04 GMT', 'content-type': 'application/json;odata=minimalmetadata;streaming=true;charset=utf-8'}.
+[2018-09-14 21:21:59,531] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:21:59,535] [INFO] (MainThread) 0fe00f5a-2bab-4607-a925-1038b9dc6691 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:21:59,770] [INFO] (MainThread) 0fe00f5a-2bab-4607-a925-1038b9dc6691 - OAuth2Client:Get Token Server returned this correlation_id: 0fe00f5a-2bab-4607-a925-1038b9dc6691
+[2018-09-14 21:21:59,841] [INFO] (MainThread) 63a27fe9-519b-4479-94af-0d1dc7304616 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:00,946] [INFO] (MainThread) a5723aff-ff72-4962-92ff-4f8c146d1004 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:01,146] [INFO] (MainThread) f4fdfee7-7afa-4971-8f80-ab7fd65c53fc - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:01,316] [INFO] (MainThread) bf617311-0859-4ce5-a4d9-03938f83d852 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:01,486] [INFO] (MainThread) 20199a76-a97f-4a95-aa52-6788c3dca04a - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:01,667] [INFO] (MainThread) 03ce3a5b-f4b3-4fc0-a34f-c28bcf1f7224 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:01,858] [INFO] (MainThread) 4a87d1a6-98d5-4d07-8b99-d4facb9043b3 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:22:02,038] [INFO] (MainThread) Client-Request-ID=d6d14fa8-b85b-11e8-91dc-784f435c7cc4 Outgoing request: Method=GET, Path=/Tables('jharrishubvnetvmsstable'), Query={'timeout': None}, Headers={'x-ms-version': '2018-03-28', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'x-ms-client-request-id': 'd6d14fa8-b85b-11e8-91dc-784f435c7cc4', 'Accept': 'application/json;odata=nometadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'Authorization': u'SharedKey jharrishubvnetstor:SlbDpSsxwwtXaDKChj58YplC2mDhRGfgHO/PWbxxyOY=', 'x-ms-date': 'Fri, 14 Sep 2018 20:22:02 GMT'}.
+[2018-09-14 21:22:02,444] [INFO] (MainThread) Client-Request-ID=d6d14fa8-b85b-11e8-91dc-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 20:22:01 GMT, Server-Request-ID=09bce150-8002-0054-0168-4cdf09000000, HTTP Status Code=200, Message=OK, Headers={'x-ms-version': '2018-03-28', 'x-content-type-options': 'nosniff', 'transfer-encoding': 'chunked', 'x-ms-request-id': '09bce150-8002-0054-0168-4cdf09000000', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 20:22:01 GMT', 'content-type': 'application/json;odata=nometadata;streaming=true;charset=utf-8'}.
+[2018-09-14 21:23:30,304] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:23:30,322] [INFO] (MainThread) f45f543f-0b77-40b9-89cc-0abcc9ac6dd4 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:23:30,569] [INFO] (MainThread) f45f543f-0b77-40b9-89cc-0abcc9ac6dd4 - OAuth2Client:Get Token Server returned this correlation_id: f45f543f-0b77-40b9-89cc-0abcc9ac6dd4
+[2018-09-14 21:23:30,631] [INFO] (MainThread) 2d21f5d6-47b7-4ef7-8090-4cd32305b402 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:23:31,377] [INFO] (MainThread) 7fbb38fc-047d-4b2e-bbb4-d7604e02c1f0 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:31:47,898] [INFO] (MainThread) dc2bc511-07f9-4488-9ed1-82faae37d4ad - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:32:49,353] [INFO] (MainThread) 9cdf5e7f-3aca-4dcd-8a13-c77397ee1788 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:38:26,588] [INFO] (MainThread) 381c7283-9c01-4fb5-96f6-cf44321d1073 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:40:01,379] [INFO] (MainThread) 5ad8a5c6-0a79-4030-87c6-0effafa4b8c2 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:40:45,970] [INFO] (MainThread) 7232c727-b2fb-445d-b634-8bc40ab591e6 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:41:22,960] [INFO] (MainThread) 684681a4-c08a-4108-8a63-e8b6b54af0d2 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:42:00,804] [INFO] (MainThread) Client-Request-ID=a1568566-b85e-11e8-b369-784f435c7cc4 Outgoing request: Method=GET, Path=/Tables('jharrishubvnetvmsstable'), Query={'timeout': None}, Headers={'x-ms-version': '2018-03-28', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'x-ms-client-request-id': 'a1568566-b85e-11e8-b369-784f435c7cc4', 'Accept': 'application/json;odata=nometadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'Authorization': u'SharedKey jharrishubvnetstor:TR7HmK9NJQtfSqH6an3pkiQQfgNpCz4KeI0gJlaEeaQ=', 'x-ms-date': 'Fri, 14 Sep 2018 20:42:00 GMT'}.
+[2018-09-14 21:42:01,234] [INFO] (MainThread) Client-Request-ID=a1568566-b85e-11e8-b369-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 20:42:00 GMT, Server-Request-ID=d93495ee-6002-0143-3f6b-4c880f000000, HTTP Status Code=200, Message=OK, Headers={'x-ms-version': '2018-03-28', 'x-content-type-options': 'nosniff', 'transfer-encoding': 'chunked', 'x-ms-request-id': 'd93495ee-6002-0143-3f6b-4c880f000000', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 20:42:00 GMT', 'content-type': 'application/json;odata=nometadata;streaming=true;charset=utf-8'}.
+[2018-09-14 21:42:07,250] [INFO] (MainThread) Client-Request-ID=a52e0a42-b85e-11e8-8489-784f435c7cc4 Outgoing request: Method=GET, Path=/jharrishubvnetvmsstable(), Query={'$top': None, 'NextPartitionKey': None, '$filter': None, 'timeout': None, 'NextRowKey': None, '$select': None}, Headers={'x-ms-version': '2018-03-28', 'DataServiceVersion': '3.0;NetFx', 'MaxDataServiceVersion': '3.0', 'x-ms-client-request-id': 'a52e0a42-b85e-11e8-8489-784f435c7cc4', 'Accept': 'application/json;odata=minimalmetadata', 'User-Agent': 'Azure-Storage/1.3.0-None (Python CPython 2.7.14; Darwin 17.7.0)', 'Authorization': u'SharedKey jharrishubvnetstor:9bA3yAMwK/8JlwLHxIDrZ/VwAXiiz5k3CfJoUoTZlQA=', 'x-ms-date': 'Fri, 14 Sep 2018 20:42:07 GMT'}.
+[2018-09-14 21:42:07,347] [INFO] (MainThread) Client-Request-ID=a52e0a42-b85e-11e8-8489-784f435c7cc4 Receiving Response: Server-Timestamp=Fri, 14 Sep 2018 20:42:06 GMT, Server-Request-ID=d9349671-6002-0143-2d6b-4c880f000000, HTTP Status Code=200, Message=OK, Headers={'x-ms-version': '2018-03-28', 'x-content-type-options': 'nosniff', 'transfer-encoding': 'chunked', 'x-ms-request-id': 'd9349671-6002-0143-2d6b-4c880f000000', 'server': 'Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0', 'cache-control': 'no-cache', 'date': 'Fri, 14 Sep 2018 20:42:06 GMT', 'content-type': 'application/json;odata=minimalmetadata;streaming=true;charset=utf-8'}.
+[2018-09-14 21:42:44,299] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:42:44,307] [INFO] (MainThread) 096e20f2-1109-4ec5-9763-833d0eb1a511 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:42:44,987] [INFO] (MainThread) 096e20f2-1109-4ec5-9763-833d0eb1a511 - OAuth2Client:Get Token Server returned this correlation_id: 096e20f2-1109-4ec5-9763-833d0eb1a511
+[2018-09-14 21:42:45,056] [INFO] (MainThread) 6b62fe59-265a-49ce-bc2d-403f8e6549b6 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:42:46,060] [INFO] (MainThread) a5572625-1f7d-4c8e-83b9-17f8c0082ea5 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:42:57,290] [INFO] (MainThread) 74e50ffd-700f-4ea7-bd43-ada0db5b3df4 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:43:19,070] [INFO] (MainThread) 528b1162-6d96-4061-92c9-ce9c96d72620 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:43:34,885] [INFO] (MainThread) 4de5abe1-37c3-42be-af35-30ed589f64e3 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:44:01,868] [INFO] (MainThread) 6bdec835-a6fa-41ca-afab-3af4ed953e60 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:49:01,535] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:49:01,538] [INFO] (MainThread) 9ce82a14-ac32-445c-951c-a9a7bd5df724 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:49:01,795] [INFO] (MainThread) 9ce82a14-ac32-445c-951c-a9a7bd5df724 - OAuth2Client:Get Token Server returned this correlation_id: 9ce82a14-ac32-445c-951c-a9a7bd5df724
+[2018-09-14 21:49:01,858] [INFO] (MainThread) c0a9e874-96eb-46cf-8b24-d75ec83e8f96 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:49:02,559] [INFO] (MainThread) 90bb5809-f6e6-4ed1-b54e-1fea93670ec9 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:49:02,950] [INFO] (MainThread) 81191a65-4692-4867-8256-b9ea035c48fa - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:50:45,325] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:50:45,328] [INFO] (MainThread) 6b31c2ff-f9cd-433f-a2fd-b7dc0eec578b - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:50:45,591] [INFO] (MainThread) 6b31c2ff-f9cd-433f-a2fd-b7dc0eec578b - OAuth2Client:Get Token Server returned this correlation_id: 6b31c2ff-f9cd-433f-a2fd-b7dc0eec578b
+[2018-09-14 21:50:45,650] [INFO] (MainThread) 3515a11d-f604-49a1-8963-158d1b182d20 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:50:46,225] [INFO] (MainThread) c9b570f4-4a82-4ed7-9711-c87dcd6533a0 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:50:46,561] [INFO] (MainThread) f7cca908-e125-4bfb-9e75-2ea97f17a44d - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:23,654] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:51:23,658] [INFO] (MainThread) 710ccf9a-29a7-4bed-b85a-54bcb96a4bd4 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:23,882] [INFO] (MainThread) 710ccf9a-29a7-4bed-b85a-54bcb96a4bd4 - OAuth2Client:Get Token Server returned this correlation_id: 710ccf9a-29a7-4bed-b85a-54bcb96a4bd4
+[2018-09-14 21:51:23,943] [INFO] (MainThread) eb4058b5-bf61-405a-9f5d-ba567de8c7fd - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:24,279] [INFO] (MainThread) 233659b2-0ef4-4bad-b320-994521e443a2 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:24,687] [INFO] (MainThread) d6414757-9385-448e-b6f4-d30b162daa03 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:48,280] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:51:48,293] [INFO] (MainThread) ddac40d7-f4ce-4092-822a-f4072c4fb7f4 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:48,498] [INFO] (MainThread) ddac40d7-f4ce-4092-822a-f4072c4fb7f4 - OAuth2Client:Get Token Server returned this correlation_id: ddac40d7-f4ce-4092-822a-f4072c4fb7f4
+[2018-09-14 21:51:48,559] [INFO] (MainThread) b2929de9-158a-48eb-8a0d-3d8bde9f3b94 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:51:48,917] [INFO] (MainThread) c4d93949-7a22-4fb6-9a5a-b32da0f81773 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:52:12,029] [INFO] (MainThread) d52a0eca-dffd-4c9b-a887-5469a259c145 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:52:16,701] [INFO] (MainThread) ebfd31f9-6b65-4d53-91ee-db4a759a62ca - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:52:21,052] [INFO] (MainThread) 1b59d280-acea-4572-9af5-ddc16c20f36b - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:52:51,226] [INFO] (MainThread) 524fddd8-4374-4fa2-bf9b-b25c9dd4ff11 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:48,261] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:54:48,264] [INFO] (MainThread) bd62b7b0-6bd5-4e51-9c83-4e8f507d89a3 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:48,507] [INFO] (MainThread) bd62b7b0-6bd5-4e51-9c83-4e8f507d89a3 - OAuth2Client:Get Token Server returned this correlation_id: bd62b7b0-6bd5-4e51-9c83-4e8f507d89a3
+[2018-09-14 21:54:48,568] [INFO] (MainThread) 6f2bd12f-2d65-4382-8ebb-ba128bc41b4d - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:49,044] [INFO] (MainThread) e1516cf0-a3dc-494a-b096-f18cfd68ce7a - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:52,996] [INFO] (MainThread) 9e836a6d-0d42-4c29-b9ce-0a547b09c4e7 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:55,485] [INFO] (MainThread) d2907df7-64ae-4466-bf03-7d5c8f3ea035 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:54:58,509] [INFO] (MainThread) 44569980-1da8-44b9-acfe-ee5b6e1083e5 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:57:41,030] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:57:41,035] [INFO] (MainThread) 8887badf-25ba-4d39-9b6b-741316063a2c - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:57:41,287] [INFO] (MainThread) 8887badf-25ba-4d39-9b6b-741316063a2c - OAuth2Client:Get Token Server returned this correlation_id: 8887badf-25ba-4d39-9b6b-741316063a2c
+[2018-09-14 21:57:41,354] [INFO] (MainThread) 2ef2b27f-5058-45ac-899a-a0721bbc521d - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:57:41,834] [ERROR] (MainThread) Getting Azure Infra handlers failed Azure Error: ResourceGroupNotFound
+Message: Resource group 'jharrishubvnet123' could not be found.
+[2018-09-14 21:58:26,117] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:58:26,120] [INFO] (MainThread) bcf58b6e-d6e2-4f4e-a181-dc8793b6d044 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:58:26,333] [INFO] (MainThread) bcf58b6e-d6e2-4f4e-a181-dc8793b6d044 - OAuth2Client:Get Token Server returned this correlation_id: bcf58b6e-d6e2-4f4e-a181-dc8793b6d044
+[2018-09-14 21:58:26,396] [INFO] (MainThread) e4c4cc8f-fb2b-4541-b9ab-60f92ac21ec5 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:58:26,992] [ERROR] (MainThread) Getting Azure Infra handlers failed Azure Error: ResourceNotFound
+Message: The Resource 'Microsoft.Storage/storageAccounts/jharrishubvnetstor' under resource group 'panorama-rg' was not found.
+[2018-09-14 21:59:03,481] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 21:59:03,484] [INFO] (MainThread) 700992fb-2908-4463-a4a9-03b01888b317 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:03,695] [INFO] (MainThread) 700992fb-2908-4463-a4a9-03b01888b317 - OAuth2Client:Get Token Server returned this correlation_id: 700992fb-2908-4463-a4a9-03b01888b317
+[2018-09-14 21:59:03,755] [INFO] (MainThread) 0451a47e-abe6-46e6-9057-7466a39439f8 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:04,515] [INFO] (MainThread) 86c3762f-4e52-438e-a785-b0bc36951602 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:19,349] [INFO] (MainThread) 4bb18f8e-b36f-493d-8035-baea7c28b541 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:21,794] [INFO] (MainThread) c67c945b-9742-41df-9e79-94bb97408985 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:23,970] [INFO] (MainThread) 01bfface-31e3-4f68-9e58-3d9c03f9f8a2 - TokenRequest:Getting token with client credentials.
+[2018-09-14 21:59:58,754] [INFO] (MainThread) 3be9e9d8-73c7-4442-83fa-7d2180b4ffcb - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:49,022] [INFO] (MainThread) Starting monitoring script
+[2018-09-14 22:01:49,025] [INFO] (MainThread) 31f2e5d9-c01e-4a8b-bf52-36c70b332ec5 - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:49,238] [INFO] (MainThread) 31f2e5d9-c01e-4a8b-bf52-36c70b332ec5 - OAuth2Client:Get Token Server returned this correlation_id: 31f2e5d9-c01e-4a8b-bf52-36c70b332ec5
+[2018-09-14 22:01:49,298] [INFO] (MainThread) ec06a3fc-dc85-41ec-b706-9398239fec3b - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:50,099] [INFO] (MainThread) afa899e7-6493-4e4a-a836-c123c6876bb7 - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:52,091] [INFO] (MainThread) eebbc916-d178-4fc2-bbf0-45ec7714f1db - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:53,753] [INFO] (MainThread) 45587e0f-8f01-4c97-bbbb-ef3f2974dd09 - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:01:55,376] [INFO] (MainThread) d6a932ac-b80c-4c9a-a72b-4c0704f94750 - TokenRequest:Getting token with client credentials.
+[2018-09-14 22:02:02,548] [INFO] (MainThread) da87fbe9-f44a-49ef-b442-d084ec8d885f - TokenRequest:Getting token with client credentials.

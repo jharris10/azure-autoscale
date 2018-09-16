@@ -19,6 +19,8 @@
 				"description": "Deployment location"
 			}
 		},
+
+		// vnet parameters
 		"virtualNetworkRG": {
 			"type": "string",
 			"metadata": {
@@ -48,13 +50,7 @@
 			"metadata": {
 				"description": "IP Address of the inbound load balancer in the Trust network"
 			}
-		},
-		"BePoolName": {
-            "type": "string",
-            "metadata": {
-                "description": "Application Gateway Backend Pool Name"
-            }
-        }
+		}
 	},
 
 	"variables": {
@@ -87,7 +83,7 @@
 				],
 				"backendAddressPools": [
 					{
-						"name": "[parameters('BePoolName')]"
+						"name": "BackendPool"
 					}
 				],
 				"loadBalancingRules": [
