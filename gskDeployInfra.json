@@ -320,6 +320,23 @@
     },
 
     "resources": [
+        {
+            "name": "SetupAppInsights",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "properties": { 
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('appInsightsUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('appInsightsName')]"
+                    }
+                }
+            }
+        },
         {    
             "name": "deployStorage",
             "type": "Microsoft.Resources/deployments",
@@ -524,8 +541,9 @@
                         "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-spoke/publish.py",
                         "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-spoke/start.sh"
                     ],
-                    "commandToExecute": "[concat('/bin/bash ./start.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), '&')]",
-                    "commandToExecute": "[concat('/bin/bash ./start.sh ', variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'), '&')]"
+                    "commandToExecute": "[concat('/bin/bash ./start-hub.sh ', variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'), '&')]",
+                    "commandToExecute": "[concat('/bin/bash ./start-spoke.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), '&')]"
+                    
 
                 }
             }
@@ -574,8 +592,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "Microsoft.Resources/deployments/SetupVNET",
-                "Microsoft.Resources/deployments/SetupPublicLoadBalancer",
+                "Microsoft.Resources/deployments/deployVnet",
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('worker-node-name'),'vm-customscript')]"
             ],
             "properties": {
