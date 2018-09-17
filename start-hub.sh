@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export DEBIAN_FRONTEND=noninteractive
 apt-get update &&
 apt-get install -y python-pip &&
 pip install azure-cli applicationinsights &&
@@ -7,6 +7,7 @@ pip install azure-batch &&
 pip install azure-mgmt-storage &&
 pip install setuptools && 
 pip install azure &&
+pip install configparser &&
 
 mkdir /tmp/monitor
 chmod 777 /tmp/monitor
@@ -24,6 +25,11 @@ echo "PANORAMA_API_KEY=$6" >> $PARAM_FILE
 echo "LICENSE_DEACTIVATION_API_KEY=$7" >> $PARAM_FILE
 echo "HUB_NAME=$8" >> $PARAM_FILE
 echo "STORAGE_ACCT_NAME=$9" >> $PARAM_FILE
+
+echo $10 >> temp_appinsights.key
+./publish.py $1 &&
+sleep 60 &&
+
 
 crontab -l > _tmp_file
 echo "*/5 * * * * /tmp/monitor/monitor.py" >> _tmp_file

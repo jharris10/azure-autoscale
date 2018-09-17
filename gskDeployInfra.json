@@ -44,7 +44,6 @@
             },
             "defaultValue": "10.0.2.4"
         },
- 
         "storageName": {
             "type": "string",
             "metadata": {
@@ -84,7 +83,7 @@
                 "latest",
                 "8.1.0",
                 "8.0.0"
-                ],
+            ],
             "defaultValue": "latest",
             "metadata": {
                 "description": "VM-Series Firewall PAN OS Version"
@@ -168,7 +167,7 @@
                 "description": "Client Secret for service principal - https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal"
             }
         },
-        "TenantId":{
+        "TenantId": {
             "type": "string",
             "metadata": {
                 "description": "Tenant ID for service principal"
@@ -182,7 +181,7 @@
         },
         "panoramaApiKey": {
             "type": "securestring",
-            "metadata":{
+            "metadata": {
                 "description": "API key to access Panorama Management server"
             }
         },
@@ -192,44 +191,44 @@
                 "description": "API key to be programmed in the Panorama server so that license deactivation works"
             }
         },
-		"bootstrap": {
-			"type": "string",
-			"defaultValue" : "yes",
-			"allowedValues": [
-				"yes",
-				"no"
-			],
-			"metadata": {
-				"description": "Bootstrap disk yes or no"
-			}
-		},
-		"BootstrapStorageAccount": {
-			"defaultValue": "",
-			"type": "String",
-			"metadata": {
-					"description": "Storage account hosting the bootstrap files"
-				}
-		},
-		"StorageAccountAccessKey": {
-			"defaultValue": "",
-			"type": "String",
-			"metadata": {
-					"description": "Authentication key to access the storage account"
-				}
-		},
-		"StorageAccountFileShare": {
-			"defaultValue": "",
-			"type": "String",
-			"metadata": {
-					"description": "The file share in the storage account where the bootstrap files are located"
-				}
-		},
-		"StorageAccountFileShareDirectory": {
-			"defaultValue": "",
-			"type": "String",
-			"metadata": {
-					"description": "The subdirectory hosting the bootstrap files. Only required if hosting multiple bootstrap directories on the same share"
-				}
+        "bootstrap": {
+            "type": "string",
+            "defaultValue": "yes",
+            "allowedValues": [
+                "yes",
+                "no"
+            ],
+            "metadata": {
+                "description": "Bootstrap disk yes or no"
+            }
+        },
+        "BootstrapStorageAccount": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Storage account hosting the bootstrap files"
+            }
+        },
+        "StorageAccountAccessKey": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Authentication key to access the storage account"
+            }
+        },
+        "StorageAccountFileShare": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "The file share in the storage account where the bootstrap files are located"
+            }
+        },
+        "StorageAccountFileShareDirectory": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "The subdirectory hosting the bootstrap files. Only required if hosting multiple bootstrap directories on the same share"
+            }
         },
         "vmScaleSetMinCount": {
             "type": "int",
@@ -260,20 +259,20 @@
             }
         },
         "autoScaleMetric": {
-             "type": "string",
-             "allowedValues": [
-                  "Data Plane CPU Utilization %", 
-                  "GP Gateway Utilization %",
-                  "GP Gateway Active Tunnels",
-                  "Data Plane Packet Buffer Utilization %",
-                  "Active Sessions",
-                  "SSL Proxy Session Utilization %",
-                  "Session Utilization %"                  
-                ], 
-             "defaultValue": "Active Sessions", 
-             "metadata": {
-                 "description": "Select the metric on which auto scale events should be triggered."
-             } 
+            "type": "string",
+            "allowedValues": [
+                "Data Plane CPU Utilization %",
+                "GP Gateway Utilization %",
+                "GP Gateway Active Tunnels",
+                "Data Plane Packet Buffer Utilization %",
+                "Active Sessions",
+                "SSL Proxy Session Utilization %",
+                "Session Utilization %"
+            ],
+            "defaultValue": "Active Sessions",
+            "metadata": {
+                "description": "Select the metric on which auto scale events should be triggered."
+            }
         },
         "hubResourceGroupName": {
             "type": "string",
@@ -282,49 +281,45 @@
             }
         }
     },
-    
     "variables": {
-        "baseUrl"              : "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/",
-        "deployStorageURL"     : "[concat(variables('baseUrl'),'/deployStorage.json')]",
-        "deployNsgURL"         : "[concat(variables('baseUrl'),'/deployNsg.json')]",
-        "deployVnetURL"        : "[concat(variables('baseUrl'),'/deployVnet.json')]",
-        "deployFirewallURL"    : "[concat(variables('baseUrl'),'/deployFirewall.json')]",
+        "baseUrl": "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/",
+        "deployStorageURL": "[concat(variables('baseUrl'),'/deployStorage.json')]",
+        "deployNsgURL": "[concat(variables('baseUrl'),'/deployNsg.json')]",
+        "deployVnetURL": "[concat(variables('baseUrl'),'/deployVnet.json')]",
+        "deployFirewallURL": "[concat(variables('baseUrl'),'/deployFirewall.json')]",
         "deployLoadBalancerURL": "[concat(variables('baseUrl'),'/deployLoadBalancer.json')]",
-
         "networkApiVersion": "2017-06-01",
         "computeApiVersion": "2017-03-30",
         "namingInfix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
-        "location"   : "[resourceGroup().location]",
-        "rgname"     : "[resourceGroup().name]",
+        "location": "[resourceGroup().location]",
+        "rgname": "[resourceGroup().name]",
         "storageName": "[toLower(parameters('storageName'))]",
         "networkSecurityGroupName": "[concat(variables('rgname'), '-nsg' )]",
         "hubLoadBalancerSku": "Standard",
         "loadBalancerName": "[concat(variables('rgname'), '-outbound-lb' )]",
-        "MgmtSubnetName" : "[concat(parameters('virtualNetworkName'), '-mgmt-subnet')]",
-        "untrustedSubnetName" : "[concat(parameters('virtualNetworkName'), '-untrust-subnet')]",
-        "trustedSubnetName" : "[concat(parameters('virtualNetworkName'), '-trust-subnet')]",
-        "mgmtPublicIPName" : "[concat(variables('rgname'), '-mgmt-pip-', variables('namingInfix'))]",
+        "MgmtSubnetName": "[concat(parameters('virtualNetworkName'), '-mgmt-subnet')]",
+        "untrustedSubnetName": "[concat(parameters('virtualNetworkName'), '-untrust-subnet')]",
+        "trustedSubnetName": "[concat(parameters('virtualNetworkName'), '-trust-subnet')]",
+        "mgmtPublicIPName": "[concat(variables('rgname'), '-mgmt-pip-', variables('namingInfix'))]",
         "nicNameWorker": "[concat ('workernic', variables('namingInfix'))]",
         "WorkerPublicIPAddressName": "[concat('workerPip', variables('namingInfix'))]",
         "worker-node-name": "[concat('worker-node',variables('namingInfix'))]",
         "avSetName": "[concat(variables('rgName'), '-outbound-avset')]",
         "firewallVmName": "[concat(variables('rgName'), '-outbound-vm-series-firewall')]",
-		"customDataField": "[concat('storage-account=', parameters('BootstrapStorageAccount'), ',access-key=', parameters('StorageAccountAccessKey'), ',file-share=', parameters('StorageAccountFileShare'),',share-directory=', parameters('StorageAccountFileShareDirectory'))]",
+        "customDataField": "[concat('storage-account=', parameters('BootstrapStorageAccount'), ',access-key=', parameters('StorageAccountAccessKey'), ',file-share=', parameters('StorageAccountFileShare'),',share-directory=', parameters('StorageAccountFileShareDirectory'))]",
         "space": " ",
-        "vmseriesURL" : "[concat(variables('baseUrl'),'/vmseries.json')]",
+        "vmseriesURL": "[concat(variables('baseUrl'),'/vmseries.json')]",
         "vmssName": "[concat('pavmfw', variables('namingInfix'))]",
         "appInsightsName": "[concat(variables('rgname'), '-appinsights-', variables('namingInfix'))]",
         "appInsightsUrl": "[concat(variables('baseUrl'),'/deployAppInsights.json')]",
         "egresslbBackendPoolName": "[concat(variables('rgname'), 'appGwBepool', variables('namingInfix'))]"
-
     },
-
     "resources": [
         {
             "name": "SetupAppInsights",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "properties": { 
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('appInsightsUrl')]",
@@ -337,7 +332,7 @@
                 }
             }
         },
-        {    
+        {
             "name": "deployStorage",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
@@ -360,7 +355,7 @@
                 }
             }
         },
-        {    
+        {
             "name": "deployNsg",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
@@ -454,7 +449,7 @@
             "dependsOn": [
                 "Microsoft.Resources/deployments/deployVNet",
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('WorkerPublicIPAddressName'))]"
-                ],
+            ],
             "tags": {
                 "displayName": "[variables('nicNameWorker')]"
             },
@@ -514,7 +509,7 @@
                     "networkInterfaces": [
                         {
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicNameWorker'))]",
-                            "properties": { 
+                            "properties": {
                                 "primary": true
                             }
                         }
@@ -529,26 +524,25 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
-                ],
+            ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
                 "typeHandlerVersion": "2.0",
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-hub/start.sh",
-                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-hub/monitor.py",
-                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-spoke/publish.py",
-                        "https://raw.githubusercontent.com/PaloAltoNetworks/Azure-Transit-VNet/master/Azure-Transit-VNET-1.1/azure-spoke/start.sh"
+                        "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/start-hub.sh",
+                        "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/start-spoke.sh",
+                        "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/monitor.py",
+                        "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/publish.py"
+                        
                     ],
                     "commandToExecute": "[concat('/bin/bash ./start-hub.sh ', variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'), '&')]",
                     "commandToExecute": "[concat('/bin/bash ./start-spoke.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), '&')]"
-                    
-
                 }
             }
         },
-        {    
+        {
             "name": "deployOutboundLoadBalancer",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
@@ -592,6 +586,9 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
+                "Microsoft.Resources/deployments/deployStorage",
+                "Microsoft.Resources/deployments/deployOutboundLoadBalancer",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]",
                 "Microsoft.Resources/deployments/deployVnet",
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('worker-node-name'),'vm-customscript')]"
             ],
@@ -609,7 +606,7 @@
                         "value": "[variables('vmssName')]"
                     },
                     "vmSize": {
-                         "value": "[parameters('firewallVmSize')]"
+                        "value": "[parameters('firewallVmSize')]"
                     },
                     "vmScaleSetMinCount": {
                         "value": "[parameters('vmScaleSetMinCount')]"
@@ -618,19 +615,19 @@
                         "value": "[parameters('vmScaleSetMaxCount')]"
                     },
                     "vmSku": {
-                         "value": "[parameters('firewallModel')]"
+                        "value": "[parameters('firewallModel')]"
                     },
                     "adminUsername": {
-                         "value": "[parameters('username')]"
+                        "value": "[parameters('username')]"
                     },
                     "adminPassword": {
-                         "value": "[parameters('password')]"
+                        "value": "[parameters('password')]"
                     },
                     "customDataField": {
                         "value": "[variables('customDataField')]"
                     },
                     "virtualNetworkName": {
-                         "value": "[parameters('virtualNetworkName')]"
+                        "value": "[parameters('virtualNetworkName')]"
                     },
                     "subnetNameMgmt": {
                         "value": "[variables('MgmtSubnetName')]"
@@ -641,7 +638,6 @@
                     "subnetNameTrust": {
                         "value": "[variables('trustedSubnetName')]"
                     },
- 
                     "BePoolName": {
                         "value": "[variables('egresslbBackendPoolName')]"
                     },
@@ -656,89 +652,6 @@
                     },
                     "scaleOutThreshold": {
                         "value": "[parameters('scaleOutThreshold')]"
-                    }
-                }
-             }
-         },
-        {    
-            "name": "deployOutboundFirewall",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/deployStorage",
-                "Microsoft.Resources/deployments/deployVNet",
-                "Microsoft.Resources/deployments/deployOutboundLoadBalancer",
-                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('deployFirewallURL')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "loadBalancerSku": {
-                        "value": "[variables('hubLoadBalancerSku')]"
-                    },
-                    "baseUrl": {
-                        "value": "[variables('baseUrl')]"
-                    },
-                    "location": {
-                        "value": "[variables('location')]"
-                    },
-                    "avSetName": {
-                        "value": "[variables('avSetName')]"
-                    },
-                    "storageName": {
-                        "value": "[variables('storageName')]"
-                    },
-                    "virtualNetworkRG": {
-                        "value": "[variables('rgName')]"
-                    },
-                    "virtualNetworkName": {
-                        "value": "[parameters('virtualNetworkName')]"
-                    },
-                    "mgmtSubnetName": {
-                        "value": "[variables('mgmtSubnetName')]"
-                    },
-                    "inboundSubnetName": {
-                        "value": "[variables('trustedSubnetName')]"
-                    },
-                    "outboundSubnetName": {
-                        "value": "[variables('untrustedSubnetName')]"
-                    },
-                    "loadBalancerName": {
-                        "value": "[variables('loadBalancerName')]"
-                    },
-                    "mgmtPublicIPName": {
-                        "value": "[variables('mgmtPublicIPName')]"
-                    },
-                    "mgmtPublicIPDns":{
-                        "value": "[concat('out', parameters('mgmtPublicIPDns'))]"
-                    },
-                    "virtualMachineName": {
-                        "value": "[variables('firewallVmName')]"
-                    },
-                    "vmSize": {
-                        "value": "[parameters('firewallVmSize')]"
-                    },
-                    "imageSku" : {
-                        "value": "[parameters('firewallModel')]"
-                    },
-                    "adminUsername": {
-                        "value": "[parameters('username')]"
-                    },
-                    "adminPassword": {
-                        "value": "[parameters('password')]"
-                    },
-                    "customDataField": {
-                        "value": "[variables('customDataField')]"
-                    },
-					"bootstrap": {
-						"value": "[parameters('bootstrap')]"
-					},
-                    "sshKey": {
-                        "value": "[parameters('sshPublicKey')]"
                     }
                 }
             }
