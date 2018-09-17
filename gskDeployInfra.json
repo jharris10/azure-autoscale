@@ -537,8 +537,7 @@
                         "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/publish.py"
                         
                     ],
-                    "commandToExecute": "[concat('/bin/bash ./start-hub.sh ', variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'), '&')]",
-                    "commandToExecute": "[concat('/bin/bash ./start-spoke.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), '&')]"
+                       "commandToExecute": "[concat('/bin/bash ./start-hub.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'),  '&')]"
                 }
             }
         },

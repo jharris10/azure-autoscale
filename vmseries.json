@@ -18,7 +18,6 @@
         "vmSize": {
             "type": "string",
             "allowedValues": [
-                
                 "Standard_D3",
                 "Standard_D4",
                 "Standard_D3_v2",
@@ -34,14 +33,14 @@
         },
         "vmScaleSetMinCount": {
             "type": "int",
-            "defaultValue": 1, 
+            "defaultValue": 1,
             "metadata": {
                 "description": "The minimum (and default) number of FWs that will be deployed into the VM Scale Set."
             }
-        }, 
+        },
         "vmScaleSetMaxCount": {
             "type": "int",
-            "defaultValue": 3, 
+            "defaultValue": 3,
             "metadata": {
                 "description": "The maximum number of FWs that can be deployed into the VM Scale Set."
             }
@@ -114,7 +113,6 @@
                 "description": "Trust Subnet name"
             }
         },
-
         "BePoolName": {
             "type": "string",
             "metadata": {
@@ -128,20 +126,20 @@
             }
         },
         "autoScaleMetric": {
-             "type": "string",
-             "allowedValues": [
-                  "Data Plane CPU Utilization %", 
-                  "GP Gateway Utilization %",
-                  "GP Gateway Active Tunnels",
-                  "Data Plane Packet Buffer Utilization %",
-                  "Active Sessions",
-                  "SSL Proxy Session Utilization %",
-                  "Session Utilization %"                  
-                ], 
-             "defaultValue": "Active Sessions", 
-             "metadata": {
-                 "description": "Select the metric on which auto scale events should be triggered."
-             } 
+            "type": "string",
+            "allowedValues": [
+                "Data Plane CPU Utilization %",
+                "GP Gateway Utilization %",
+                "GP Gateway Active Tunnels",
+                "Data Plane Packet Buffer Utilization %",
+                "Active Sessions",
+                "SSL Proxy Session Utilization %",
+                "Session Utilization %"
+            ],
+            "defaultValue": "Active Sessions",
+            "metadata": {
+                "description": "Select the metric on which auto scale events should be triggered."
+            }
         },
         "scaleInThreshold": {
             "type": "int",
@@ -156,9 +154,16 @@
             "metadata": {
                 "description": "The Threshold above which FW VM scale out kicks in."
             }
-        }
+        },
+        "loadBalancerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of egress lb"
+            }
+        },
     },
     "variables": {
+        "lbId": "[resourceId('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]",
         "rgname": "[resourceGroup().id]",
         "namingInfix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "autoscaleName": "[concat('autoscale', variables('namingInfix'))]",
@@ -169,21 +174,21 @@
         "ipConfigNametrust": "[concat('ipconfigtrust', variables('namingInfix'))]",
         "ipConfigNamemgmt": "[concat('ipconfigmgmt', variables('namingInfix'))]",
         "imagePublisher": "paloaltonetworks",
-        "imageOffer" : "vmseries1",
-        "version" : "latest",
+        "imageOffer": "vmseries1",
+        "version": "latest",
         "location": "[resourceGroup().location]",
-        "resourceGroupName": "[resourceGroup().name]", 
+        "resourceGroupName": "[resourceGroup().name]",
         "scaleMetricMap": {
             "Data Plane CPU Utilization %": {
-                "metricName": "customMetrics/DataPlaneCPUUtilizationPct", 
+                "metricName": "customMetrics/DataPlaneCPUUtilizationPct",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
-            }, 
+            },
             "GP Gateway Utilization %": {
                 "metricName": "customMetrics/panGPGatewayUtilizationPct",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
-            }, 
+            },
             "GP Gateway Active Tunnels": {
-                "metricName": "customMetrics/panGPGWUtilizationActiveTunnels", 
+                "metricName": "customMetrics/panGPGWUtilizationActiveTunnels",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
             },
             "Active Sessions": {
@@ -193,16 +198,15 @@
             "Data Plane Packet Buffer Utilization %": {
                 "metricName": "customMetrics/DataPlanePacketBufferUtilization",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
-
             },
             "SSL Proxy Session Utilization %": {
-                "metricName": "customMetrics/panSessionSslProxyUtilization", 
+                "metricName": "customMetrics/panSessionSslProxyUtilization",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
             },
             "Session Utilization %": {
-                "metricName": "customMetrics/panSessionUtilization", 
+                "metricName": "customMetrics/panSessionUtilization",
                 "metricResourceUri": "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
-            }        
+            }
         }
     },
     "resources": [
@@ -220,9 +224,9 @@
                 "capacity": "[parameters('vmScaleSetMinCount')]"
             },
             "plan": {
-                 "name": "[parameters('vmSku')]",
-                 "product": "[variables('imageOffer')]",
-                 "publisher": "[variables('imagePublisher')]"
+                "name": "[parameters('vmSku')]",
+                "product": "[variables('imageOffer')]",
+                "publisher": "[variables('imagePublisher')]"
             },
             "properties": {
                 "overprovision": "false",
@@ -256,52 +260,66 @@
                     },
                     "networkProfile": {
                         "networkInterfaceConfigurations": [
-                        {
-                            "name": "[variables('nicNameMgmt')]",
-                            "properties": {
-                                "primary": "true",
-                                "ipConfigurations": [
-                                {
-                                    "name": "[variables('ipConfigNamemgmt')]",
-                                    "properties": {
-                                        "subnet": {
-                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameMgmt'))]"
+                            {
+                                "name": "[variables('nicNameMgmt')]",
+                                "properties": {
+                                    "primary": "true",
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('ipConfigNamemgmt')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameMgmt'))]"
+                                                }
+                                            }
                                         }
-                                    }
-                                }]
-                            }
-                        },
-                        {
-                            "name": "[variables('nicNameUntrust')]",
-                            "properties": {
-                                "primary": "false",
-                                "ipConfigurations": [
-                                {
-                                    "name": "[variables('ipConfigNameuntrust')]",
-                                    "properties": {
-                                        "subnet": {
-                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameUntrust'))]"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "[variables('nicNameUntrust')]",
+                                "properties": {
+                                    "primary": "false",
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('ipConfigNameuntrust')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameUntrust'))]"
+                                                },
+                                                "publicipaddressconfiguration": {
+                                                    "name": "pub1",
+                                                    "properties": {
+                                                        "idleTimeoutInMinutes": 15
+                                                    }
+                                                }
+                                            }
                                         }
-                                    }
-                                }]
-                            }
-                        },
-                        {
-                            "name": "[variables('nicNameTrust')]",
-                            "properties": {
-                                "primary": "false",
-                                "ipConfigurations": [
-                                {
-                                    "name": "[variables('ipConfigNametrust')]",
-                                    "properties": {
-                                        "subnet": {
-                                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameTrust'))]"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "[variables('nicNameTrust')]",
+                                "properties": {
+                                    "primary": "false",
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('ipConfigNametrust')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetNameTrust'))]"
+                                                },
+                                                "loadBalancerBackendAddressPools": [
+                                                    {
+                                                        "id": "[concat(variables('lbId'), '/backendAddressPools/BackendPool')]"
+                                                    }
+                                                ]
+                                            }
                                         }
-                                        
-                                    }
-                                }]
+                                    ]
+                                }
                             }
-                        }]
+                        ]
                     }
                 }
             }
@@ -323,14 +341,14 @@
                     {
                         "name": "Auto created scale condition",
                         "capacity": {
-                            "default": "[parameters('vmScaleSetMinCount')]", 
-                            "maximum": "[parameters('vmScaleSetMaxCount')]", 
+                            "default": "[parameters('vmScaleSetMinCount')]",
+                            "maximum": "[parameters('vmScaleSetMaxCount')]",
                             "minimum": "[parameters('vmScaleSetMinCount')]"
                         },
                         "rules": [
                             {
                                 "metricTrigger": {
-                                    "metricName": "[variables('scaleMetricMap')[parameters('autoScaleMetric')].metricName]", 
+                                    "metricName": "[variables('scaleMetricMap')[parameters('autoScaleMetric')].metricName]",
                                     "metricNamespace": "",
                                     "metricResourceUri": "[variables('scaleMetricMap')[parameters('autoScaleMetric')].metricResourceUri]",
                                     "timeGrain": "PT1M",
@@ -370,19 +388,19 @@
                     }
                 ],
                 "notifications": [
-                {
-                    "operation": "Scale",
-                    "email": {
-                        "sendToSubscriptionAdministrator": false,
-                        "sendToSubscriptionCoAdministrators": false,
-                        "customEmails": []
+                    {
+                        "operation": "Scale",
+                        "email": {
+                            "sendToSubscriptionAdministrator": false,
+                            "sendToSubscriptionCoAdministrators": false,
+                            "customEmails": []
+                        }
                     }
-                }
                 ],
-            "enabled": true,
-            "targetResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+                "enabled": true,
+                "targetResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+            }
         }
-    }],
-    "outputs": {
-    }
+    ],
+    "outputs": {}
 }
