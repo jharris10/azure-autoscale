@@ -160,7 +160,7 @@
             "metadata": {
                 "description": "Name of egress lb"
             }
-        },
+        }
     },
     "variables": {
         "lbId": "[resourceId('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]",
