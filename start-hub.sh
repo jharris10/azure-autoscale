@@ -27,7 +27,7 @@ echo "HUB_NAME=$8" >> $PARAM_FILE
 echo "STORAGE_ACCT_NAME=$9" >> $PARAM_FILE
 
 echo $10 >> temp_appinsights.key
-./publish.py $1 &&
+./publish.py $10 &&
 sleep 60 &&
 
 
