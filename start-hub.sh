@@ -25,9 +25,10 @@ echo "PANORAMA_API_KEY=$6" >> $PARAM_FILE
 echo "LICENSE_DEACTIVATION_API_KEY=$7" >> $PARAM_FILE
 echo "HUB_NAME=$8" >> $PARAM_FILE
 echo "STORAGE_ACCT_NAME=$9" >> $PARAM_FILE
+echo "VM_SKU=$10" >> $PARAM_FILE
 
 echo $10 >> temp_appinsights.key
-./publish.py $10 &&
+./publish.py $11 &&
 sleep 60 &&
 
 

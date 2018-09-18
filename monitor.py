@@ -47,6 +47,7 @@ def get_azure_cred():
     config = configparser.ConfigParser()
     config.read(CRED_FILE)
 
+
     subscription_id = str(config['DEFAULT']['azure_subscription_id'])
     credentials = ServicePrincipalCredentials(
         client_id=config['DEFAULT']['azure_client_id'],
@@ -60,6 +61,12 @@ def get_hub_and_storage_name():
     config = configparser.ConfigParser()
     config.read(CRED_FILE)
     return (str(config['DEFAULT']['HUB_NAME']), str(config['DEFAULT']['STORAGE_ACCT_NAME']))
+
+def get_vm_sku():
+    config = configparser.ConfigParser()
+    config.read(CRED_FILE)
+    return (str(config['DEFAULT']['VM_SKU']))
+
 
 
 def get_panorama():
@@ -298,7 +305,7 @@ class Azure:
     APPINSIGHTS_TYPE = 'Microsoft.Insights/components'
 
     # Hardcoded names used for internal Azure resources
-    ILB_NAME = 'myPrivateLB'
+    ILB_NAME = 'jharrismyrg-outbound-lb'
     ALPHANUM = r'[^A-Za-z0-9]+'
 
     def __init__(self, cred, subs_id, hub, storage, pan_handle, logger = None):
@@ -493,6 +500,7 @@ class Azure:
 
 def main():
     logger.info("Starting monitoring script")
+    vm_sku = get_vm_sku()
     credentials, subscription_id = get_azure_cred()
     panorama_ip, panorama_key = get_panorama()
     my_hub_name, my_storage_name = get_hub_and_storage_name()
@@ -505,36 +513,37 @@ def main():
 
     # Program the new spokes for NAT and Instrumentation Key.
     for spoke in azure_handle.new_spokes:
-        ilb_ip_addr = azure_handle.get_ilb_ip(spoke)
+
+        # ilb_ip_addr = azure_handle.get_ilb_ip(spoke)
         count = 0
-        # Another constraint! The DG in Panorama has to be named 
-        # as <spoke_name> + '-dg'
-        dg_name = panorama.get_dg_name_of_spoke(spoke) 
-        if ilb_ip_addr:
-            logger.info('%s - NAT IP address for the ILB: ' % ilb_ip_addr)
-            ok, res = panorama.set_ilb_nat_address(dg_name, ilb_ip_addr)
-            if not ok:
-                logger.error("Not able to set ILB NAT Address %s in DG %s" % (ilb_ip_addr, dg_name))
-                logger.error("Error %s" % res)
-                continue
-            count += 1
+        # # Another constraint! The DG in Panorama has to be named
+        # # as <spoke_name> + '-dg'
+        # dg_name = panorama.get_dg_name_of_spoke(spoke)
+        # if ilb_ip_addr:
+        #     logger.info('%s - NAT IP address for the ILB: ' % ilb_ip_addr)
+        #     ok, res = panorama.set_ilb_nat_address(dg_name, ilb_ip_addr)
+        #     if not ok:
+        #         logger.error("Not able to set ILB NAT Address %s in DG %s" % (ilb_ip_addr, dg_name))
+        #         logger.error("Error %s" % res)
+        #         continue
+        #     count += 1
 
         # The template has to be named as the spoke name itself.
         instr_key = azure_handle.get_appinsights_instr_key(spoke)
         templ_name = spoke
-        if instr_key:
-            ok, res = panorama.set_azure_advanced_metrics(templ_name, instr_key)
-            if not ok:
-                logger.error("Not able to enable CW metrics in Panorama template %s" % tmpl_name)
-                logger.error("Return error %s" % res)
-                continue
-            count += 1
-
-        if count == 2:
-            azure_handle.set_spoke_as_programmed(spoke)
-        else:
-            logger.info("Not enough information to program panorama, will retry in next cycle")
-            continue
+        # if instr_key:
+        #     # ok, res = panorama.set_azure_advanced_metrics(templ_name, instr_key)
+        #     if not ok:
+        #         logger.error("Not able to enable CW metrics in Panorama template %s" % tmpl_name)
+        #         logger.error("Return error %s" % res)
+        #         continue
+        # count += 1
+        #
+        # if count == 2:
+        #     azure_handle.set_spoke_as_programmed(spoke)
+        # else:
+        #     logger.info("Not enough information to program panorama, will retry in next cycle")
+        #     continue
 
     # In all the resource groups in the subscription, look for VMSS which
     # particpates in the monitor's licensing function.
@@ -567,7 +576,7 @@ def main():
             except StopIteration:
                 logger.info("VM %s found in VMSS but not in Panorama. May be not yet booted." % vm_hostname)
                 continue
-           
+
             # If the VM is found in VMSS and in Panorama as well, look it up
             # in the Cosmos DB. If not found, add the Licensing information to the DB. 
             db_vm_info = azure_handle.get_vm_in_cosmos_db(spoke, vm_hostname)
@@ -582,7 +591,8 @@ def main():
 
         # The list of FW VMs that need to be licensed are the ones which are
         # found in the DB but not in Azure VMSS. They are gone and need to be
-        # delicensed.
+        # delicensed and removed from Panorama.
+        # If we are not using byol then we will just remove the devices from Cosmo and Panorama
         vms_to_delic = [x for x in db_hostname_list if x.get('hostname') not in vmss_hostname_list]
 
         if vms_to_delic:
@@ -593,15 +603,19 @@ def main():
                 logger.info('Will still attempt to delicense them')
 
             for device in vms_to_delic:
-                ok, res = panorama.deactivate_license(device.get('serial'))
-                if not ok:
-                    logger.error('Deactivation of VM %s failed with error %s. will retry' % (device.get('hostname'), res))
-                    continue
-                logger.info('Deactivation of VM %s successful' % device.get('RowKey'))
-                panorama.cleanup_device(dg_name, tmplstk_name, device.get('name'))
+
+                if vm_sku == 'byol':
+                    ok, res = panorama.deactivate_license(device.get('serial'))
+                    if not ok:
+                        logger.error('Deactivation of VM %s failed with error %s. will retry' % (device.get('hostname'), res))
+                        continue
+                    logger.info('Deactivation of VM %s successful' % device.get('RowKey'))
+
                 
                 # Delete the entry from the table service as well.
+                panorama.cleanup_device(dg_name, tmplstk_name, device.get('name'))
                 azure_handle.delete_vm_from_cosmos_db(spoke, device.get('hostname'))
+
         else:
             logger.debug('No VMs need to be delicensed. No-op')
 
@@ -612,15 +626,16 @@ def main():
     for vm in all_db_vms_list:
         if vm.get('PartitionKey') not in azure_handle.managed_spokes:
             logger.info("VM %s is orphaned since the spoke does not exist" % vm.get('RowKey'))
-            ok, res = panorama.deactivate_license(vm.get('serial'))
-            if not ok:
-                logger.error('Deactivation of VM %s failed. will retry' % vm.get('RowKey'))
-                continue
             panorama.cleanup_device(panorama.get_dg_name_of_spoke(vm.get('PartitionKey')),
                                     panorama.get_tmplstk_name_of_spoke(vm.get('PartitionKey')),
                                     vm.get('name'))
             # Delete the entry from the table service as well.
             azure_handle.delete_vm_from_cosmos_db(vm.get('PartitionKey'), vm.get('RowKey'))
+            ok, res = panorama.deactivate_license(vm.get('serial'))
+            if not ok:
+                logger.error('Deactivation of VM %s failed. will retry' % vm.get('RowKey'))
+                continue
+
     return 0
 
 if __name__ == "__main__":
