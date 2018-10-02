@@ -9,10 +9,10 @@ pip install setuptools &&
 pip install azure &&
 pip install configparser &&
 
-mkdir /usr/monitor
-chmod 755 /usr/monitor
-cp monitor.py /usr/monitor/monitor.py
-chmod 755 /usr/monitor/monitor.py
+mkdir /usr/monitor &&
+chmod 755 /usr/monitor &&
+cp monitor.py /usr/monitor/monitor.py &&
+chmod 755 /usr/monitor/monitor.py  &&
 
 PARAM_FILE=/usr/monitor/monitor.cfg
 echo "[DEFAULT]" > $PARAM_FILE

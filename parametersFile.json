@@ -1,0 +1,109 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworkName": {
+      "value": "hub-vnet"
+    },
+    "virtualNetworkAddressPrefix": {
+      "value": "10.200.0.0/16"
+    },
+    "mgmtSubnetPrefix": {
+      "value": "10.200.0.0/24"
+    },
+    "untrustedSubnetPrefix": {
+      "value": "10.200.1.0/24"
+    },
+    "trustedSubnetPrefix": {
+      "value": "10.200.2.0/24"
+    },
+    "loadBalancerIP": {
+      "value": "10.200.2.4"
+    },
+    "storageName": {
+      "value": "jharrishubvnetstor"
+    },
+    "storageType": {
+      "value": "Standard_LRS"
+    },
+    "mgmtPublicIPDns": {
+      "value": "jharrisfwmgt"
+    },
+    "networkSecurityGroupInboundIP": {
+      "value": "0.0.0.0/0"
+    },
+    "imageVersion": {
+      "value": "latest"
+    },
+    "firewallModel": {
+      "value": "byol"
+    },
+    "firewallVmSize": {
+      "value": "Standard_D3_v2"
+    },
+    "authenticationType": {
+      "value": "password"
+    },
+    "username": {
+      "value": "pandemo"
+    },
+    "password": {
+      "value": "Dem0pa$$w0rd"
+    },
+
+    "subscriptionId": {
+      "value": "78ba968c-2b70-4d43-a121-17bb150d1d65"
+    },
+    "appID": {
+      "value": "eebcab82-31fc-4aa2-b8de-b97e0832308a"
+    },
+    "appSecret": {
+      "value": "6Ue+AlL6++VOt2tTwKa9IVtXGXYGV2YLjEnchFWRFFI="
+    },
+    "TenantId": {
+      "value": "80a1e588-75aa-4654-8464-d92b677b8d63"
+    },
+    "panoramaIP": {
+      "value": "23.96.119.44"
+    },
+    "panoramaApiKey": {
+      "value": "LUFRPT11UnE0Um5UdEx5VThxeXpTV0cxWkFnbEhUdmc9Zmk3bk4weUJiS0NOckVPSlVOa2paZjNhQ1o0RS80ekp6Vm1PVDNWaUJtVT0="
+    },
+    "licenseDeactivationKey": {
+      "value": "6a85f78e5cd9a7eccae9333361f3cbd798ee1e8c70bad9dfeb027f345e562d2d"
+    },
+    "bootstrap": {
+      "value": "yes"
+    },
+    "BootstrapStorageAccount": {
+      "value": "bootstrap1"
+    },
+    "StorageAccountAccessKey": {
+      "value": "1RkgIyB68632LcaPGbwdDtFtkXib/7PlQa0AH5ZtFbLPDdercKmNe/aj1NA6kO2gf0C1uANn+2UAVJNRY3df/w=="
+    },
+    "StorageAccountFileShare": {
+      "value": "bp-fw-boot"
+    },
+    "StorageAccountFileShareDirectory": {
+      "value": null
+    },
+    "vmScaleSetMinCount": {
+      "value": 1
+    },
+    "vmScaleSetMaxCount": {
+      "value": 3
+    },
+    "scaleInThreshold": {
+      "value": 20
+    },
+    "scaleOutThreshold": {
+      "value": 80
+    },
+    "autoScaleMetric": {
+      "value": "Active Sessions"
+    },
+    "hubResourceGroupName": {
+      "value": "newvmrg"
+    }
+  }
+}

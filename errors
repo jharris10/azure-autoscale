@@ -1,0 +1,224 @@
+{
+  "status": "Failed",
+  "error": {
+    "code": "ResourceDeploymentFailure",
+    "message": "The resource operation completed with terminal provisioning state 'Failed'.",
+    "details": [
+      {
+        "code": "DeploymentFailed",
+        "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-debug for usage details.",
+        "details": [
+          {
+            "code": "Conflict",
+            "message": "{\r\n  \"error\": {\r\n    \"code\": \"MissingRegistrationForLocation\",\r\n    \"message\": \"The subscription is not registered for the resource type 'components' in the location 'eastus2'. Please re-register for this provider in order to have access to this location.\"\r\n  }\r\n}"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+
+{
+  "status": "Failed",
+  "error": {
+    "code": "ResourceDeploymentFailure",
+    "message": "The resource operation completed with terminal provisioning state 'Failed'.",
+    "details": [
+      {
+        "code": "DeploymentFailed",
+        "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-debug for usage details.",
+        "details": [
+          {
+            "code": "NotFound",
+            "message": "{\r\n  \"code\": \"TargetResourceNotFound\",\r\n  \"message\": \"The target resource id '/subscriptions/78ba968c-2b70-4d43-a121-17bb150d1d65/resourceGroups/jharrisrg/providers/Microsoft.Insights/components/jharrisrg-appinsights-vk7ki' was not found.\"\r\n}"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+
+,
+        {
+            "name": "SetupVMSeries",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/deployStorage",
+                "Microsoft.Resources/deployments/deployOutboundLoadBalancer",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]",
+                "Microsoft.Resources/deployments/deployVnet",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('worker-node-name'),'vm-customscript')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('vmseriesURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "hubName": {
+                        "value": "[parameters('hubResourceGroupName')]"
+                    },
+                    "vmssName": {
+                        "value": "[variables('vmssName')]"
+                    },
+                    "vmSize": {
+                         "value": "[parameters('firewallVmSize')]"
+                    },
+                    "vmScaleSetMinCount": {
+                        "value": "[parameters('vmScaleSetMinCount')]"
+                    },
+                    "vmScaleSetMaxCount": {
+                        "value": "[parameters('vmScaleSetMaxCount')]"
+                    },
+                    "vmSku": {
+                         "value": "[parameters('firewallModel')]"
+                    },
+                    "adminUsername": {
+                         "value": "[parameters('username')]"
+                    },
+                    "adminPassword": {
+                         "value": "[parameters('password')]"
+                    },
+                    "customDataField": {
+                        "value": "[variables('customDataField')]"
+                    },
+                    "virtualNetworkName": {
+                         "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "subnetNameMgmt": {
+                        "value": "[variables('MgmtSubnetName')]"
+                    },
+                    "subnetNameUntrust": {
+                        "value": "[variables('untrustedSubnetName')]"
+                    },
+                    "subnetNameTrust": {
+                        "value": "[variables('trustedSubnetName')]"
+                    },
+ 
+                    "BePoolName": {
+                        "value": "[variables('egresslbBackendPoolName')]"
+                    },
+                    "appInsightsName": {
+                        "value": "[variables('appInsightsName')]"
+                    },
+                    "autoScaleMetric": {
+                        "value": "[parameters('autoScaleMetric')]"
+                    },
+                    "scaleInThreshold": {
+                        "value": "[parameters('scaleInThreshold')]"
+                    },
+                    "scaleOutThreshold": {
+                        "value": "[parameters('scaleOutThreshold')]"
+                    }
+                }
+             }
+         },
+        {    
+            "name": "deployOutboundFirewall",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/deployStorage",
+                "Microsoft.Resources/deployments/deployVNet",
+                "Microsoft.Resources/deployments/deployOutboundLoadBalancer",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker-node-name'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('deployFirewallURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "loadBalancerSku": {
+                        "value": "[variables('hubLoadBalancerSku')]"
+                    },
+                    "baseUrl": {
+                        "value": "[variables('baseUrl')]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    },
+                    "avSetName": {
+                        "value": "[variables('avSetName')]"
+                    },
+                    "storageName": {
+                        "value": "[variables('storageName')]"
+                    },
+                    "virtualNetworkRG": {
+                        "value": "[variables('rgName')]"
+                    },
+                    "virtualNetworkName": {
+                        "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "mgmtSubnetName": {
+                        "value": "[variables('mgmtSubnetName')]"
+                    },
+                    "inboundSubnetName": {
+                        "value": "[variables('trustedSubnetName')]"
+                    },
+                    "outboundSubnetName": {
+                        "value": "[variables('untrustedSubnetName')]"
+                    },
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
+                    "mgmtPublicIPName": {
+                        "value": "[variables('mgmtPublicIPName')]"
+                    },
+                    "mgmtPublicIPDns":{
+                        "value": "[concat('out', parameters('mgmtPublicIPDns'))]"
+                    },
+                    "virtualMachineName": {
+                        "value": "[variables('firewallVmName')]"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('firewallVmSize')]"
+                    },
+                    "imageSku" : {
+                        "value": "[parameters('firewallModel')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('username')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('password')]"
+                    },
+                    "customDataField": {
+                        "value": "[variables('customDataField')]"
+                    },
+					"bootstrap": {
+						"value": "[parameters('bootstrap')]"
+					},
+                    "sshKey": {
+                        "value": "[parameters('sshPublicKey')]"
+                    }
+                }
+            }
+        }
+
+
+
+        {
+  "status": "Failed",
+  "error": {
+    "code": "ResourceDeploymentFailure",
+    "message": "The resource operation completed with terminal provisioning state 'Failed'.",
+    "details": [
+      {
+        "code": "DeploymentFailed",
+        "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-debug for usage details.",
+        "details": [
+          {
+            "code": "BadRequest",
+            "message": "{\r\n  \"code\": \"UnsupportedMetric\",\r\n  \"message\": \"Metric 'customMetrics/panSessionActive' is not supported for resource '/subscriptions/78ba968c-2b70-4d43-a121-17bb150d1d65/resourceGroups/jharrismyrg/providers/Microsoft.Insights/components/jharrismyrg-appinsights-azshr'\"\r\n}"
+          }
+        ]
+      }
+    ]
+  }
+}

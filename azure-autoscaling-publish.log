@@ -1,0 +1,11 @@
+[2018-09-27 15:44:57,127] [INFO] (MainThread) e68bda39-effd-4240-b92f-7ee1ae0ffef7 - TokenRequest:Getting token with client credentials.
+[2018-09-27 15:44:57,342] [INFO] (MainThread) e68bda39-effd-4240-b92f-7ee1ae0ffef7 - OAuth2Client:Get Token Server returned this correlation_id: e68bda39-effd-4240-b92f-7ee1ae0ffef7
+[2018-09-27 15:44:59,613] [INFO] (MainThread) 47ba0ddd-0b44-465c-b25f-74c507548e59 - TokenRequest:Getting token with client credentials.
+[2018-09-27 15:44:59,794] [INFO] (MainThread) 582273f4-1ff3-4a36-aa2e-67a0891cde7f - TokenRequest:Getting token with client credentials.
+[2018-09-27 15:45:03,361] [INFO] (MainThread) [INFO]: Publishing metrics panSessionActive
+[2018-09-27 15:45:09,648] [INFO] (MainThread) [INFO]: Publishing metrics DataPlaneCPUUtilizationPct
+[2018-09-27 15:45:15,109] [INFO] (MainThread) [INFO]: Publishing metrics panGPGatewayUtilizationPct
+[2018-09-27 15:45:21,357] [INFO] (MainThread) [INFO]: Publishing metrics panGPGWUtilizationActiveTunnels
+[2018-09-27 15:45:27,295] [INFO] (MainThread) [INFO]: Publishing metrics DataPlanePacketBufferUtilization
+[2018-09-27 15:45:32,383] [INFO] (MainThread) [INFO]: Publishing metrics panSessionSslProxyUtilization
+[2018-09-27 15:45:38,330] [INFO] (MainThread) [INFO]: Publishing metrics panSessionUtilization

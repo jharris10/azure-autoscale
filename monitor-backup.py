@@ -323,18 +323,86 @@ class Azure:
             self.logger.error("Getting Azure Infra handlers failed %s" % str(e))
             raise e
 
+        # Start -> List out all RGs and identify new spokes to mark them with tags.
+        # Look for Resource Groups (RGs) which do not have tags or does not have a
+        # a tag named "PANORAMA_PROGRAMMED".
+        # potential_new_spokes = [x.name for x in self.resource_client.resource_groups.list()\
+        #                  if not x.tags or not x.tags.get(self.RG_RULE_PROGRAMMED_TAG, None)]
 
+        # If the RG has a VMSS which has a tag named "PanoramaManaged" with a value
+        # as Hub Resource Group name then we know that this is a new spoke that is
+        # launched managed by the Hub and not yet programmed for NAT/Azure Instrumentation
+        # key.
+        # for rg in potential_new_spokes:
+        #     fw_vm_list = [x for x in self.resource_client.resources.list_by_resource_group(rg)
+        #                   if x.type == self.VMSS_TYPE and self.filter_vmss(rg, x.name)]
+        #     if fw_vm_list:
+        #         rg_params = {'location': self.resource_client.resource_groups.get(rg).location}
+        #         rg_params.update(tags={
+        #                                  self.RG_RULE_PROGRAMMED_TAG : 'No',
+        #                                  self.HUB_MANAGED_TAG        : self.hub_name
+        #                               })
+        #         self.resource_client.resource_groups.create_or_update(rg, rg_params)
+        #         self.logger.info("RG %s marked as a spoke managed by this hub %s" % (rg, self.hub_name))
+        # End -> List out all RGs and identify new spokes to mark them with tags.
+
+        # Populate the list of spokes managed by this Azure hub.
         rg_list = self.resource_client.resource_groups.list()
         self.managed_spokes = []
         self.managed_spokes.append(vmss_rg_name)
         self.new_spokes = []
-
+        # for rg in rg_list:
+        #     if rg.tags and rg.tags.get(self.HUB_MANAGED_TAG, None) == self.hub_name:
+        #         self.managed_spokes.append(rg.name)
+        #         if rg.tags.get(self.RG_RULE_PROGRAMMED_TAG, 'Yes') == 'No':
+        #             self.new_spokes.append(rg.name)
+        # self.logger.debug('%s identified as spokes managed by %s' % (self.managed_spokes, self.hub_name))
+        # if self.new_spokes:
+        #     self.logger.info('%s identified as new spokes to be programmed by %s' % (self.new_spokes, self.hub_name))
+        #
+        #
 
     def filter_vmss(self, spoke, vmss_name):
         vmss = self.compute_client.virtual_machine_scale_sets.get(spoke, vmss_name)
         if vmss.tags and vmss.tags.get(self.HUB_MANAGED_TAG, None) == self.hub_name:
             return True
         return False
+
+    def get_ilb_ip(self, spoke):
+        for resource in self.resource_client.resources.list_by_resource_group(spoke):
+            # Get the ILB IP Address from the spoke. The ILB address is always
+            # hardcoded to be myPrivateILB.
+            if resource.name == self.ILB_NAME and resource.type == self.ILB_TYPE:
+                ilb_obj = self.network_client.load_balancers.get(spoke, resource.name)
+                ilb_frontend_cfg = ilb_obj.frontend_ip_configurations
+                try:
+                    ilb_private_ip = ilb_frontend_cfg[0].private_ip_address
+                except IndexError as e:
+                    self.logger.info("ILB is not setup yet in RG %s." % spoke)
+                    return None
+                return ilb_private_ip
+        return None
+
+    def get_appinsights_instr_key(self, spoke):
+        for resource in self.resource_client.resources.list_by_resource_group(spoke):
+            # Get the Appinsights instance where the custom metrics are being
+            # published.
+            if resource.type == self.APPINSIGHTS_TYPE and 'appinsights' in resource.name:
+                appinsights_obj = self.resource_client.resources.get_by_id(resource.id, '2014-04-01')
+                instr_key = appinsights_obj.properties.get('InstrumentationKey', '')
+                if not instr_key:
+                    self.logger.info("InstrKey is not setup yet in %s." % spoke)
+                    return None
+                return instr_key
+        return None
+
+    def set_spoke_as_programmed(self, spoke):
+        spoke_params = {'location': self.resource_client.resource_groups.get(spoke).location}
+        spoke_tags = self.resource_client.resource_groups.get(spoke).tags
+        spoke_tags[self.RG_RULE_PROGRAMMED_TAG] = 'Yes'
+        spoke_params.update(tags=spoke_tags)
+        self.resource_client.resource_groups.create_or_update(spoke, spoke_params)
+        self.logger.info("RG %s marked as programmed and spoke managed by this hub %s" % (spoke, self.hub_name))
 
     def create_worker_ready_tag(self, worker_name):
         self.compute_client.virtual_machines.create_or_update(
@@ -484,7 +552,7 @@ def main():
     # particpates in the monitor's licensing function.
     vmss_vms_list = []
     for spoke in azure_handle.managed_spokes:
-
+        # vmss = azure_handle.get_vmss_in_spoke(spoke)
         vmss = azure_handle.get_vmss_by_name(spoke, vmss_name)
         if not vmss:
             logger.error("No VMSS found in Resource Group %s" % spoke)
@@ -555,7 +623,22 @@ def main():
         else:
             logger.debug('No VMs need to be delicensed. No-op')
 
-
+    # Assume there is a scenario where, the spoke is deleted in Azure
+    # the VMs are destroyed. We will not get track these VMs since we
+    # we will not track the spoke. Identifying such VMs here.
+    # all_db_vms_list = azure_handle.get_fw_vms_in_cosmos_db()
+    # for vm in all_db_vms_list:
+    #     if vm.get('PartitionKey') not in azure_handle.managed_spokes:
+    #         logger.info("VM %s is orphaned since the spoke does not exist" % vm.get('RowKey'))
+    #         ok, res = panorama.deactivate_license(vm.get('serial'))
+    #         if not ok:
+    #             logger.error('Deactivation of VM %s failed. will retry' % vm.get('RowKey'))
+    #             continue
+    #         panorama.cleanup_device(panorama.get_dg_name_of_spoke(vm.get('PartitionKey')),
+    #                                 panorama.get_tmplstk_name_of_spoke(vm.get('PartitionKey')),
+    #                                 vm.get('name'))
+    #         # Delete the entry from the table service as well.
+    #         azure_handle.delete_vm_from_cosmos_db(vm.get('PartitionKey'), vm.get('RowKey'))
     return 0
 
 

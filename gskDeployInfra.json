@@ -142,13 +142,6 @@
                 "description": "Password for the administrator account of all VM instances. Must be specified if Authentication Type is 'password'."
             }
         },
-        "sshPublicKey": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "SSH RSA public key file as a string. Must be specified if Authentication Type is 'sshPublicKey'."
-            }
-        },
         "subscriptionId": {
             "type": "string",
             "metadata": {
