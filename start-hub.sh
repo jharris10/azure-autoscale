@@ -12,7 +12,9 @@ pip install configparser &&
 mkdir /usr/monitor &&
 chmod 755 /usr/monitor &&
 cp monitor.py /usr/monitor/monitor.py &&
+cp monitor.py /usr/monitor/publish.py &&
 chmod 755 /usr/monitor/monitor.py  &&
+chmod 755 /usr/monitor/publish.py  &&
 
 PARAM_FILE=/usr/monitor/monitor.cfg
 echo "[DEFAULT]" > $PARAM_FILE
@@ -26,9 +28,11 @@ echo "LICENSE_DEACTIVATION_API_KEY=$7" >> $PARAM_FILE
 echo "RG_NAME=$8" >> $PARAM_FILE
 echo "WORKER_NAME=$9" >> $PARAM_FILE
 echo "VMSS_NAME=$10" >> $PARAM_FILE
+echo "STORAGE_ACCT_NAME" >> $PARAM_FILE
 echo "APPINSIGHTS_NAME=$11" >> $PARAM_FILE
 
-./publish.py &&
+
+/usr/monitor/publish.py &&
 sleep 60 &&
 
 crontab -l > _tmp_file

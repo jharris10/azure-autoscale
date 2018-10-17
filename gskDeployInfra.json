@@ -91,7 +91,7 @@
         },
         "firewallModel": {
             "type": "string",
-            "defaultValue": "byol",
+            "defaultValue": "bundle2",
             "allowedValues": [
                 "byol",
                 "bundle1",
@@ -217,7 +217,7 @@
             }
         },
         "StorageAccountFileShareDirectory": {
-            "defaultValue": "",
+            "defaultValue": null,
             "type": "String",
             "metadata": {
                 "description": "The subdirectory hosting the bootstrap files. Only required if hosting multiple bootstrap directories on the same share"
@@ -529,7 +529,7 @@
                         "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/monitor.py",
                         "https://raw.githubusercontent.com/jharris10/azure-autoscale/master/publish.py"
                     ],
-                    "commandToExecute": "[concat('/bin/bash ./start-hub.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('storageName'), variables('space'), parameters('firewallModel'), variables('space'), reference('SetupAppInsights').outputs.instrumentationKey.value, variables('space'), '&')]"
+                    "commandToExecute": "[concat('/bin/bash ./start-hub.sh', variables('space'), parameters('subscriptionId'), variables('space'), parameters('appID'), variables('space'), parameters('appSecret'), variables('space'), parameters('TenantId'), variables('space'), parameters('panoramaIP'), variables('space'), parameters('panoramaApiKey'), variables('space'), parameters('licenseDeactivationKey'), variables('space'), variables('rgname'), variables('space'), variables('worker-node-name'), variables('space'), variables('vmssName'), variables('space'),variables('appInsightsName'), variables('space'),variables('storageName'), variables('space'),variables('rgname'),variables('space'), '&')]"
                 }
             }
         },
