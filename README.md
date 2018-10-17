@@ -3,7 +3,7 @@
 
 
 
-[<img src="http://azuredeploy.net/deploybutton.png"/>](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjharris10%2Fazure-autoscale%2Fmaster%2gskDeployInfra.json)
+[<img src="http://azuredeploy.net/deploybutton.png"/>](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjharris10%2Fazure-autoscale%2Fmaster%2FgskDeployInfra.json)
 
 This template automates deployment of firewall LB sandwich environment for Egress Security.
 It includes following components:
