@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
+import configparser
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import re
 import ssl
-import urllib2
 import xml.etree.ElementTree as ET
 
-import configparser
+
+import urllib2
 import xmltodict
 from azure.common import AzureMissingResourceHttpError
 from azure.common.credentials import ServicePrincipalCredentials
@@ -19,16 +21,29 @@ from azure.mgmt.storage import StorageManagementClient
 
 LOG_FILENAME = 'worker.log'
 CRED_FILE = 'monitor.cfg'
-logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO,
-                    filemode='a',
-                    format='[%(asctime)s] [%(levelname)s] (%(threadName)-10s) %(message)s')
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logHandler = TimedRotatingFileHandler(LOG_FILENAME, when="midnight")
+logFormatter = logging.Formatter('%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logHandler.setFormatter(logFormatter)
+
+logger = logging.getLogger('time_rotate_logger')
+logger.addHandler(logHandler)
+logger.setLevel(logging.DEBUG)
+
+# logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO,
+#                     filemode='a',
+#                     format='[%(asctime)s] [%(levelname)s] (%(threadName)-10s) %(message)s')
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
 
 
 #####################
 # Utility functions #
 #####################
+
+from logging.handlers import TimedRotatingFileHandler
+
+
+
 
 def get_default_ssl_context():
     ctx = ssl.create_default_context()
@@ -40,7 +55,7 @@ def get_default_ssl_context():
 def get_azure_cred():
     config = configparser.ConfigParser()
     config.read(CRED_FILE)
-
+    test = config['DEFAULT']['azure_client_id']
     subscription_id = str(config['DEFAULT']['azure_subscription_id'])
     credentials = ServicePrincipalCredentials(
         client_id=config['DEFAULT']['azure_client_id'],
@@ -49,6 +64,10 @@ def get_azure_cred():
     )
     return credentials, subscription_id
 
+def get_storage_acct_values():
+    config = configparser.ConfigParser()
+    config.read(CRED_FILE)
+    return (str(config['DEFAULT']['STORAGE_ACCT_NAME'])),(str(config['DEFAULT']['STORAGE_ACCT_RG']))
 
 def get_worker_name():
     config = configparser.ConfigParser()
@@ -67,10 +86,10 @@ def get_vmss_name():
     return (str(config['DEFAULT']['VMSS_NAME']))
 
 
-def get_hub_and_storage_name():
+def get_vmssrg_and_storage_name():
     config = configparser.ConfigParser()
     config.read(CRED_FILE)
-    return (str(config['DEFAULT']['RG_NAME']), str(config['DEFAULT']['STORAGE_ACCT_NAME']))
+    return (str(config['DEFAULT']['RG_NAME']))
 
 
 def get_panorama():
@@ -117,10 +136,10 @@ class Panorama:
             return (False, o['response']['msg'])
 
     def get_dg_name_of_spoke(self, spoke):
-        return spoke + '-dg'
+        return spoke
 
     def get_tmplstk_name_of_spoke(self, spoke):
-        return spoke + '-tmplstk'
+        return spoke
 
     def set_ilb_nat_address(self, dg_name, nat_ip):
         url = "https://" + self.ip + "/api/?type=config&action=set&key=" + self.key
@@ -301,11 +320,11 @@ class Azure:
     ILB_NAME = 'myPrivateLB'
     ALPHANUM = r'[^A-Za-z0-9]+'
 
-    def __init__(self, cred, subs_id, hub, vmss_rg_name, vmss_name, storage, pan_handle, logger=None):
+    def __init__(self, cred, subs_id, my_storage_rg, vmss_rg_name, vmss_name, storage, pan_handle, logger=None):
         self.credentials = cred
         self.subscription_id = subs_id
         self.logger = logger
-        self.hub_name = hub
+        self.hub_name = vmss_rg_name
         self.storage_name = storage
         self.panorama_handler = pan_handle
         self.vmss_table_name = re.sub(self.ALPHANUM, '', vmss_name + 'vmsstable')
@@ -316,7 +335,7 @@ class Azure:
             self.compute_client = ComputeManagementClient(cred, subs_id)
             self.network_client = NetworkManagementClient(cred, subs_id)
             self.store_client = StorageManagementClient(cred, subs_id)
-            store_keys = self.store_client.storage_accounts.list_keys(hub, storage).keys[0].value
+            store_keys = self.store_client.storage_accounts.list_keys(my_storage_rg, storage).keys[0].value
             self.table_service = TableService(account_name=storage,
                                               account_key=store_keys)
         except Exception as e:
@@ -459,17 +478,21 @@ class Azure:
 
 
 def main():
+    #"Assume SKU is Byol"
+    vm_license_sku = ''
     logger.info("Starting monitoring script")
     credentials, subscription_id = get_azure_cred()
     panorama_ip, panorama_key = get_panorama()
-    my_hub_name, my_storage_name = get_hub_and_storage_name()
+    my_vmssrg_name = get_vmssrg_and_storage_name()
+    my_storage_name, my_storage_rg = get_storage_acct_values()
+
     worker_name = get_worker_name()
     vmss_rg_name = get_vmss_rg()
     vmss_name = get_vmss_name()
 
     panorama = Panorama(panorama_ip, panorama_key, logger)
     azure_handle = Azure(credentials, subscription_id,
-                         my_hub_name, vmss_rg_name, vmss_name, my_storage_name, panorama, logger)
+                         my_storage_rg, vmss_rg_name, vmss_name, my_storage_name, panorama, logger)
     azure_handle.create_new_cosmos_table(azure_handle.vmss_table_name)
 
     # Another constraint! The DG in Panorama has to be named
@@ -496,6 +519,7 @@ def main():
         # Get VM List in the Panorama Device Group List
         ok, pan_vms_list = panorama.get_devices_in_dg(dg_name)
         if not ok:
+            logger.info("Failed to get device list from Panorama")
             continue
 
         vmss_hostname_list = []
@@ -504,6 +528,8 @@ def main():
             vmss_hostname_list.append(unicode(vm_hostname))
 
             vm_license_sku = vm.plan.as_dict()['name']
+            logger.info("Got license SKU %s" % vm_license_sku)
+
             # If VM is found in VMSS but not in Panorama, it is probably booting
             # and has not yet joined the Panorama Device Group list. Skip the VM for now.
             try:
@@ -523,12 +549,12 @@ def main():
 
         # Now, get a list of FW VMs stored in the backend for a spoke.
         db_hostname_list = azure_handle.get_fw_vms_in_cosmos_db(spoke)
+        logger.info("Got list of VMs from Cosmos." % db_hostname_list)
 
         # The list of FW VMs that need to be licensed are the ones which are
         # found in the DB but not in Azure VMSS. They are gone and need to be
         # delicensed.
         vms_to_delic = [x for x in db_hostname_list if x.get('hostname') not in vmss_hostname_list]
-
 
 
         if vms_to_delic:
